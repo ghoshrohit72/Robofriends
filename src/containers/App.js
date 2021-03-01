@@ -1,37 +1,45 @@
-import React, {Component} from 'react';
+import React, { useEffect, useState } from 'react';
 import CardList from '../components/CardList';
 import Scroll from '../components/Scroll';
 import SearchBox from '../components/SearchBox';
 import './app.css';
 import Errorboundary from '../components/Errorboundary'
 
-class App  extends Component{
+function App() 
+{
     //adding state 
-    constructor() {
-        super()
-        this.state=
-        {
-            robots: [],
-            searchfield : ''
-        }
-    }
+    // constructor() {
+    //     super()
+    //     this.state=
+    //     {
+    //         robots: [],
+    //         searchfield : ''
+    //     }
+    // }
 
-    componentDidMount(){     //since this is not a javascript file, we are not using the => function
+    // componentDidMount(){     //since this is not a javascript file, we are not using the => function
+    //     fetch('https://jsonplaceholder.typicode.com/users')
+    //     .then(response => response.json())  
+
+    //     .then(users => this.setState({robots : users}))      // we are collecting the robots from the javascript file.
+    // }
+
+    const [robots, setRobots] = useState([]);
+    const [searchfield, setSearchfield] = useState('');
+
+    const onSearchEvent = (event) =>{
+        setSearchfield(event.target.value)
+
+    }
+    
+    useEffect(()=>{
         fetch('https://jsonplaceholder.typicode.com/users')
-        .then(response => response.json())  
+            .then(response => response.json())  
 
-        .then(users => this.setState({robots : users}))      // we are collecting the robots from the javascript file.
-    }
+            .then(users =>{setRobots(users)})  
 
-    onSearchEvent = (event) =>{
-        this.setState({searchfield: event.target.value})
-
-    }
-
-
-    render()
-    {
-        const { robots, searchfield} = this.state; //destructring the code to make it a lot clearner
+    },[]) //only change if the component changes
+    
         const filteredRobots = robots.filter(robot => {
             return robot.name.toLowerCase().includes(searchfield.toLowerCase())
         })
@@ -40,7 +48,7 @@ class App  extends Component{
             
                 <div className="tc">
                     <h1 className='f1' >RoboFriends</h1>
-                    < SearchBox searchChange= {this.onSearchEvent} />
+                    < SearchBox searchChange= {onSearchEvent} />
                     <Scroll>
                     <Errorboundary>
                     <CardList robots={filteredRobots} />
@@ -49,7 +57,7 @@ class App  extends Component{
                 </div>
                 
             
-        }
+        
        
         
     };
